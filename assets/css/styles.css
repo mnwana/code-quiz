@@ -46,7 +46,19 @@ header h1 a {
   text-align: right;
 }
 /* Main opening screen */
+#answers {
+    text-align: center;
+    font-size: 16px;
+    padding: 0 70px
+}
 
+#start-quiz {
+    font-size: 16px;
+}
+
+#answers p {
+    align-self: center;
+}
 
 /* Main during quiz */
 
@@ -66,7 +78,7 @@ main {
 
 }
 
-.answer-option {
+button {
   background-color: var(--primary);
   color: white;
   align-items: center;
