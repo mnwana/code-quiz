@@ -1,10 +1,12 @@
 // initialize starting values for question array, quiz timer and main/header
 var questions = [];
 var questionNum = 0;
-var quizTimer = 60;
+var quizTimer = 30;
 var answersEl = document.querySelector("#answers");
 var startQuizEl = document.querySelector("#start-quiz");
 var timerEl = document.querySelector("#timer");
+var questionTextEl = document.querySelector("#question-text");
+var answerListEl = document.querySelector("#answer-list");
 
 // load question text
 // TODO: will look to change this to read from file or something
@@ -29,35 +31,52 @@ var loadQuestion = function (
 
 var answersHandler = function (event) {
   console.dir(event);
+  // when option clicked
+  // if !isCorrect, deduct 10 seconds from timer & display "Wrong!"
+  // if isCorrect, display "Correct!"
+  // if more questions remain & time >0
+  //   displayQuiz();
+  // else get high score input
 };
 
 var startQuizHandler = function (event) {
-  window.alert("Quiz is starting");
-// cycle through questions
-    // start timer countdown
-    displayQuiz(questions[questionNum]);
+  // start timer countdown
+  setInterval(updateTimer, 1000);
+  // remove start quiz element
+  startQuizEl.remove();
+  // remove instructions text
+  var instructionsEL = document.querySelector("#instructions");
+  instructionsEL.remove();
+  // call displayQuiz to load first question
+  displayQuiz();
 };
 
-var displayQuiz = function(questionNum){
-    // display question
+var displayQuiz = function () {
+  var currentQuestion = questions[questionNum];
+  // display question
+  questionTextEl.textContent = currentQuestion.questionText;
+  // set answer options
+  for (var i = 1; i < currentQuestion.answers.length; i++) {
+    currentAnswer = currentQuestion.answers[i];
+    console.log(currentAnswer);
+  }
+  // create button options
+  //   questionNum++;
+};
+// sort questions in random order
+var sortQuestions = function () {};
 
-    // when option clicked
-
-        // if !isCorrect, deduct 10 seconds from timer & display "Wrong!"
-        // if isCorrect, display "Correct!"
-    questionNum++;
-    // if there is another question, display next question 
-    // else get high score input
-}
-// sort questions in random order 
-var sortQuestions = function (){
-
-}
-// load 2 questions to test with & shuffle
-loadQuestion("What is my name", "Marielle", "Mariellen", "Marie", "Mary");
-loadQuestion("What is his name", "William", "Willy", "Will", "Walt");
-sortQuestions();
+var updateTimer = function () {
+  timerEl.textContent = "Time: " + quizTimer;
+  quizTimer--;
+};
 // initialize timer
 timerEl.textContent = "Time: " + quizTimer;
 startQuizEl.addEventListener("click", startQuizHandler);
-answers.addEventListener("click",displayQuiz)
+answers.addEventListener("click", answersHandler);
+// load 2 questions to test with & shuffle
+loadQuestion("What is my name??", "Marielle", "Mariellen", "Marie", "Mary");
+loadQuestion("What is his name??", "William", "Willy", "Will", "Walt");
+loadQuestion("What is my name?", "Marielle", "Mariellen", "Marie", "Mary");
+loadQuestion("What is his name?", "William", "Willy", "Will", "Walt");
+sortQuestions();
