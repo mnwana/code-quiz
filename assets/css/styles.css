@@ -75,7 +75,6 @@ main {
 
 #answer-list li {
   list-style: none;
-
 }
 
 button {
@@ -98,4 +97,10 @@ button {
     font-style: italic;
 }
 
+.answer-option {
+    margin-bottom: 10px;
+    width: auto;
+    padding: 10px;
+    text-align: left;
+}
 /* main high score page */

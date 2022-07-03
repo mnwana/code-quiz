@@ -19,18 +19,12 @@ var loadQuestion = function (
 ) {
   var question = {
     questionText: questionText,
-    answers: {
-      answer1: { answerText: correctChoice, isCorrect: true },
-      answer2: { answerText: choice2, isCorrect: false },
-      answer3: { answerText: choice3, isCorrect: false },
-      answer4: { answerText: choice4, isCorrect: false },
-    },
+    answers: [correctChoice, choice2, choice3, choice4],
   };
   questions.push(question);
 };
 
 var answersHandler = function (event) {
-  console.dir(event);
   // when option clicked
   // if !isCorrect, deduct 10 seconds from timer & display "Wrong!"
   // if isCorrect, display "Correct!"
@@ -56,12 +50,21 @@ var displayQuiz = function () {
   // display question
   questionTextEl.textContent = currentQuestion.questionText;
   // set answer options
-  for (var i = 1; i < currentQuestion.answers.length; i++) {
+  for (var i = 0; i < currentQuestion.answers.length; i++) {
     currentAnswer = currentQuestion.answers[i];
-    console.log(currentAnswer);
+    var answerEl = document.createElement("li");
+    var btnEl = document.createElement("button");
+    btnEl.className = "answer-option";
+    btnEl.textContent = i + 1 + ". " + currentAnswer;
+    btnEl.setAttribute("data-is-corret", false);
+    // if first value (and correct answer) set isCorrect=true
+    if (i == 0) {
+      btnEl.setAttribute("data-is-corret", true);
+    }
+    answerEl.append(btnEl);
+    answerListEl.append(answerEl);
   }
-  // create button options
-  //   questionNum++;
+    questionNum++;
 };
 // sort questions in random order
 var sortQuestions = function () {};
