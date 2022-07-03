@@ -7,6 +7,7 @@ var startQuizEl = document.querySelector("#start-quiz");
 var timerEl = document.querySelector("#timer");
 var questionTextEl = document.querySelector("#question-text");
 var answerListEl = document.querySelector("#answer-list");
+var answerFlagEl = document.querySelector("#answer-flag h2")
 
 // load question text
 // TODO: will look to change this to read from file or something
@@ -25,8 +26,15 @@ var loadQuestion = function (
 };
 
 var answersHandler = function (event) {
-  // when option clicked
+  var isCorrect = event.target.getAttribute("data-is-correct");
+  console.log(isCorrect);
   // if !isCorrect, deduct 10 seconds from timer & display "Wrong!"
+  if(isCorrect=="1"){
+    answerFlagEl.textContent = "Correct!";
+  }
+  else if(isCorrect=="0"){
+    answerFlagEl.textContent = "Wrong!";
+  }
   // if isCorrect, display "Correct!"
   // if more questions remain & time >0
   //   displayQuiz();
@@ -56,15 +64,15 @@ var displayQuiz = function () {
     var btnEl = document.createElement("button");
     btnEl.className = "answer-option";
     btnEl.textContent = i + 1 + ". " + currentAnswer;
-    btnEl.setAttribute("data-is-corret", false);
+    btnEl.setAttribute("data-is-correct", "0");
     // if first value (and correct answer) set isCorrect=true
     if (i == 0) {
-      btnEl.setAttribute("data-is-corret", true);
+      btnEl.setAttribute("data-is-correct", "1");
     }
     answerEl.append(btnEl);
     answerListEl.append(answerEl);
   }
-    questionNum++;
+  questionNum++;
 };
 // sort questions in random order
 var sortQuestions = function () {};
