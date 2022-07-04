@@ -10,6 +10,7 @@ var questionTextEl = document.querySelector("#question-text");
 var answerListEl = document.querySelector("#answer-list");
 var answerFlagEl = document.querySelector("#answer-flag h2");
 var highScores = [];
+var instructionsEL = document.querySelector("#instructions");
 
 // load question text
 // TODO: will look to change this to read from file or something
@@ -43,7 +44,7 @@ var answersHandler = function (event) {
     // clear existing list
     answerListEl.replaceChildren();
     // call next question
-    displayQuiz();
+    displayQuestion();
   } else {
     clearInterval(quizInterval);
     displayHighScores();
@@ -53,6 +54,10 @@ var answersHandler = function (event) {
 };
 
 var displayHighScores = function () {
+  questionTextEl.textContent = "Game Over!";
+  answerListEl.replaceChildren();
+  quizTimer = Math.max(quizTimer, 0);
+  instructionsEL.textContent = "Your final score is: " + quizTimer;
   // get initials for new score value & update local storage array
   addNewScore();
   // for each value in array add row item
@@ -62,25 +67,36 @@ var displayHighScores = function () {
 
 var addNewScore = function () {
   // load local storage
+  highScores = JSON.parse(localStorage.getItem("high-scores"));
   // get new nickname
+  var nickname = document.querySelector("input[name='nick-name']").value;
   // add to high score array resort values
   // use 2 arrays to insert & sort where new value > next value
   // save to local storage
 };
 
 var startQuizHandler = function (event) {
+  // initialize timer
+  quizTimer = 30;
+  // load 2 questions to test with & shuffle
+  loadQuestion("What is my name??", "Marielle", "Mariellen", "Marie", "Mary");
+  loadQuestion("What is his name??", "William", "Willy", "Will", "Walt");
+  loadQuestion("What is my name?", "Marielle", "Mariellen", "Marie", "Mary");
+  loadQuestion("What is his name?", "William", "Willy", "Will", "Walt");
+  loadQuestion("What is they're name?", "Molly", "Monica", "Milly", "Mook");
+  sortQuestions();
   // start timer countdown
   quizInterval = setInterval(updateTimer, 1000);
   // remove start quiz element
   startQuizEl.remove();
   // remove instructions text
-  var instructionsEL = document.querySelector("#instructions");
-  instructionsEL.remove();
-  // call displayQuiz to load first question
-  displayQuiz();
+  instructionsEL.textContent = "";
+  //   instructionsEL.remove();
+  // call displayQuestion to load first question
+  displayQuestion();
 };
 
-var displayQuiz = function () {
+var displayQuestion = function () {
   var currentQuestion = questions[questionNum];
   // display question
   questionTextEl.textContent = currentQuestion.questionText;
@@ -109,14 +125,6 @@ var updateTimer = function () {
   quizTimer--;
 };
 
-// initialize timer
 timerEl.textContent = "Time: " + quizTimer;
 startQuizEl.addEventListener("click", startQuizHandler);
 answers.addEventListener("click", answersHandler);
-// load 2 questions to test with & shuffle
-loadQuestion("What is my name??", "Marielle", "Mariellen", "Marie", "Mary");
-loadQuestion("What is his name??", "William", "Willy", "Will", "Walt");
-loadQuestion("What is my name?", "Marielle", "Mariellen", "Marie", "Mary");
-loadQuestion("What is his name?", "William", "Willy", "Will", "Walt");
-loadQuestion("What is they're name?", "Molly", "Monica", "Milly", "Mook");
-sortQuestions();

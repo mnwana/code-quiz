@@ -46,7 +46,7 @@ header h1 a {
   text-align: right;
 }
 /* Main opening screen */
-#answers {
+#answers, #instructions {
     text-align: center;
     font-size: 16px;
     padding: 0 70px
@@ -56,9 +56,10 @@ header h1 a {
     font-size: 16px;
 }
 
-#answers p {
+#answers p, #instructions p {
     align-self: center;
 }
+
 
 /* Main during quiz */
 
@@ -103,4 +104,8 @@ button {
     padding: 10px;
     text-align: left;
 }
-/* main high score page */
+
+#question-text {
+    text-align: center;
+    padding: 0 70px
+}
