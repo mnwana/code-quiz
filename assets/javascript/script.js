@@ -2,6 +2,7 @@
 var questions = [];
 var questionNum = 0;
 var quizTimer = 30;
+var quizInterval;
 var answersEl = document.querySelector("#answers");
 var startQuizEl = document.querySelector("#start-quiz");
 var timerEl = document.querySelector("#timer");
@@ -27,23 +28,32 @@ var loadQuestion = function (
 
 var answersHandler = function (event) {
   var isCorrect = event.target.getAttribute("data-is-correct");
-  console.log(isCorrect);
-  // if !isCorrect, deduct 10 seconds from timer & display "Wrong!"
+   // if isCorrect, display "Correct!"
   if(isCorrect=="1"){
     answerFlagEl.textContent = "Correct!";
   }
+    // if !isCorrect, deduct 10 seconds from timer & display "Wrong!"
+
   else if(isCorrect=="0"){
     answerFlagEl.textContent = "Wrong!";
   }
-  // if isCorrect, display "Correct!"
   // if more questions remain & time >0
-  //   displayQuiz();
+  if(quizTimer>0&&questions[questionNum]){
+    // clear existing list 
+    answerListEl.replaceChildren();;
+    // call next question
+    displayQuiz();
+  }
+  else{
+    clearInterval(quizInterval);
+  }
+
   // else get high score input
 };
 
 var startQuizHandler = function (event) {
   // start timer countdown
-  setInterval(updateTimer, 1000);
+  quizInterval = setInterval(updateTimer, 1000);
   // remove start quiz element
   startQuizEl.remove();
   // remove instructions text
