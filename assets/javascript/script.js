@@ -57,8 +57,14 @@ var displayHighScores = function () {
   questionTextEl.textContent = "Game Over!";
   answerListEl.replaceChildren();
   quizTimer = Math.max(quizTimer, 0);
+  answerFlagEl.textContent = "";
   instructionsEL.textContent = "Your final score is: " + quizTimer;
   // get initials for new score value & update local storage array
+  //   create input box
+  answersEl.innerHTML =
+    '  <input id="hs-input" type="text" name="nickname" placeholder="Enter Nickname" />';
+  var highScoreEl = document.querySelector("#hs-input");
+  highScoreEl.addEventListener("submit", addNewScore);
   addNewScore();
   // for each value in array add row item
   // create button to go back to quiz start page
@@ -69,7 +75,7 @@ var addNewScore = function () {
   // load local storage
   highScores = JSON.parse(localStorage.getItem("high-scores"));
   // get new nickname
-  var nickname = document.querySelector("input[name='nick-name']").value;
+  var nickname = document.querySelector("#hs-input").value;
   // add to high score array resort values
   // use 2 arrays to insert & sort where new value > next value
   // save to local storage
