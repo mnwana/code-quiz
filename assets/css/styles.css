@@ -63,6 +63,10 @@ header h1 a {
 
 /* Main during quiz */
 
+#intro-content {
+  text-align: center;
+}
+
 main {
   display: flex;
   align-items: center;
@@ -72,6 +76,7 @@ main {
 
 #answer-list {
     padding-inline-start: 0;
+    text-align: left;
 }
 
 #answer-list li {

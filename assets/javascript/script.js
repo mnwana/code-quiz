@@ -39,7 +39,7 @@ var answersHandler = function (event) {
   // if !isCorrect, deduct 10 seconds from timer & display "Wrong!"
   else if (isCorrect == "0") {
     answerFlagEl.textContent = "Wrong!";
-    quizTimer -= 10;
+    quizTimer -= 5;
   }
   // if more questions remain & time >0
   if (quizTimer > 0 && questions[questionNum]) {
