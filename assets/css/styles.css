@@ -15,7 +15,7 @@ body {
   background: #ededed;
   color: var(--grey);
   margin: 0;
-  padding: 0;
+  padding: 10px;
   display: flex;
   min-height: 100vh;
   flex-direction: column;
@@ -108,4 +108,8 @@ button {
 #question-text {
     text-align: center;
     padding: 0 70px
+}
+
+.form-group{
+    padding-top: 10px;
 }

@@ -3,14 +3,16 @@ var questions = [];
 var questionNum = 0;
 var quizTimer = 30;
 var quizInterval;
+var mainEl = document.querySelector("main");
 var answersEl = document.querySelector("#answers");
 var startQuizEl = document.querySelector("#start-quiz");
 var timerEl = document.querySelector("#timer");
 var questionTextEl = document.querySelector("#question-text");
 var answerListEl = document.querySelector("#answer-list");
 var answerFlagEl = document.querySelector("#answer-flag h2");
-var highScores = [];
+var highScores;
 var instructionsEL = document.querySelector("#instructions");
+var saveScoreEl;
 
 // load question text
 // TODO: will look to change this to read from file or something
@@ -29,6 +31,10 @@ var loadQuestion = function (
 };
 
 var answersHandler = function (event) {
+  // if click is not on a button, exit function
+  if (event.target.className != "answer-option") {
+    return false;
+  }
   var isCorrect = event.target.getAttribute("data-is-correct");
   // if isCorrect, display "Correct!"
   if (isCorrect == "1") {
@@ -47,38 +53,63 @@ var answersHandler = function (event) {
     displayQuestion();
   } else {
     clearInterval(quizInterval);
-    displayHighScores();
+    displayHighScoresPage();
   }
 
   // else get high score input
 };
 
-var displayHighScores = function () {
+var displayHighScoresPage = function () {
   questionTextEl.textContent = "Game Over!";
   answerListEl.replaceChildren();
   quizTimer = Math.max(quizTimer, 0);
   answerFlagEl.textContent = "";
   instructionsEL.textContent = "Your final score is: " + quizTimer;
-  // get initials for new score value & update local storage array
   //   create input box
-  answersEl.innerHTML =
-    '  <input id="hs-input" type="text" name="nickname" placeholder="Enter Nickname" />';
-  var highScoreEl = document.querySelector("#hs-input");
-  highScoreEl.addEventListener("submit", addNewScore);
-  addNewScore();
+  var hsFormEl = document.createElement("form");
+  var inputEl = document.createElement("input");
+  var submitEl = document.createElement("button");
+  hsFormEl.id = "score-form";
+
+  inputEl.id = "hs-input";
+  inputEl.type = "text";
+  inputEl.setAttribute("name", "nickname");
+  inputEl.placeholder = "Enter Nickname";
+
+  submitEl.className = "btn";
+  submitEl.id = "save-score";
+  submitEl.type = "submit";
+  submitEl.textContent = "Save Score";
+
+  hsFormEl.append(inputEl);
+  hsFormEl.append(submitEl);
+  mainEl.append(hsFormEl);
+  saveScoreEl = document.querySelector("#save-score");
+  saveScoreEl.addEventListener("click", addNewScore);
   // for each value in array add row item
   // create button to go back to quiz start page
   // create button to clear high scores
 };
 
-var addNewScore = function () {
-  // load local storage
-  highScores = JSON.parse(localStorage.getItem("high-scores"));
+var addNewScore = function (event) {
+  event.preventDefault();
   // get new nickname
   var nickname = document.querySelector("#hs-input").value;
-  // add to high score array resort values
-  // use 2 arrays to insert & sort where new value > next value
+  // load local storage & add new score
+  highScores = JSON.parse(localStorage.getItem("high-scores"));
+  if (!highScores) {
+    highScores = [];
+  }
+  highScores.push({ nickname: nickname, score: quizTimer });
+  // resort high scores & save back to local storage
+//   highScores = highScores.sort((a, b) => a.score.localeCompare(b.score));
   // save to local storage
+  localStorage.setItem("high-scores", JSON.stringify(highScores));
+  completeHighScorePage();
+};
+
+var completeHighScorePage = function () {
+  questionTextEl.textContent = "High Scores";
 };
 
 var startQuizHandler = function (event) {
