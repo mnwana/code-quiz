@@ -6,10 +6,9 @@ var answerListEl;
 var answerFlagEl;
 var quizInterval;
 var highScores;
-var questions = [];
-var questionNum = 0;
-var quizTimer = 30;
-
+var questions;
+var questionNum;
+var quizTimer;
 
 // load question text
 // TODO: will look to change this to read from file or something
@@ -64,6 +63,7 @@ var displayHighScoresPage = function () {
   answerFlagEl.textContent = "";
   var subHeaderEl = document.createElement("p");
   subHeaderEl.textContent = "Your final score is: " + quizTimer;
+  subHeaderEl.id="sub-header";
   var introContentEl = document.querySelector("#intro-content");
   introContentEl.append(subHeaderEl);
   //   create input box
@@ -96,22 +96,33 @@ var addNewScore = function (event) {
   event.preventDefault();
   // get new nickname
   var nickname = document.querySelector("#hs-input").value;
-  // load local storage & add new score
-  savedScores = localStorage.getItem("high-scores");
+  completeHighScorePage(nickname);
+};
+
+var completeHighScorePage = function (nickname) {
+  var savedScores = localStorage.getItem("high-scores");
   if (!savedScores) {
     highScores = [];
   } else {
     highScores = JSON.parse(savedScores);
   }
-  highScores.push({ nickname: nickname, score: quizTimer });
-  // resort high scores & save back to local storage
-  //   highScores = highScores.sort((a, b) => a.score.localeCompare(b.score));
+  if (nickname) {
+    highScores.push({ nickname: nickname, score: quizTimer });
+  }
+  // remove instructions element
+  if (document.querySelector("#instructions")) {
+    document.querySelector("#instructions").remove();
+  }
+  // remove start quiz element
+  if (document.querySelector("#start-quiz")) {
+    document.querySelector("#start-quiz").remove();
+  }
+// remove subheader
+  if (document.querySelector("#sub-header")) {
+    document.querySelector("#sub-header").remove();
+  }
   // save to local storage
   localStorage.setItem("high-scores", JSON.stringify(highScores));
-  completeHighScorePage();
-};
-
-var completeHighScorePage = function () {
   var questionTextEl = document.querySelector("#question-text");
   questionTextEl.textContent = "High Scores";
   //   remove score form
@@ -132,9 +143,8 @@ var completeHighScorePage = function () {
   highScoreBox.id = "high-score-box";
   var highScoreList = document.createElement("ul");
   highScoreList.id = "high-scores";
-  console.log(highScores);
   //   iterate over values in highScores to add top 3 to list
-  for (var i = 0; i < highScores.length && i < 3; i++) {
+  for (var i = 0; i < highScores.length && i < 5; i++) {
     currentScore = highScores[i];
     var scoreEl = document.createElement("li");
     scoreEl.className = "score-list-item";
@@ -177,15 +187,6 @@ var goBackHandler = function () {
 };
 
 var startQuizHandler = function (event) {
-  // initialize timer
-  quizTimer = 30;
-  // load 2 questions to test with & shuffle
-  loadQuestion("What is my name??", "Marielle", "Mariellen", "Marie", "Mary");
-  loadQuestion("What is his name??", "William", "Willy", "Will", "Walt");
-  loadQuestion("What is my name?", "Marielle", "Mariellen", "Marie", "Mary");
-  loadQuestion("What is his name?", "William", "Willy", "Will", "Walt");
-  loadQuestion("What is they're name?", "Molly", "Monica", "Milly", "Mook");
-  sortQuestions();
   // start timer countdown
   quizInterval = setInterval(updateTimer, 1000);
   // remove instructions text
@@ -231,15 +232,23 @@ var displayQuestion = function () {
   answers.addEventListener("click", answersHandler);
   questionNum++;
 };
-// sort questions in random order
-var sortQuestions = function () {};
-
 var updateTimer = function () {
   timerEl.textContent = "Time: " + quizTimer;
   quizTimer--;
 };
 
 var initializePage = function () {
+  // reset questions array and question num
+  questions = [];
+  questionNum = 0;
+  // load 5 questions into quiz
+  loadQuestion("What is my name??", "Marielle", "Mariellen", "Marie", "Mary");
+  loadQuestion("What is his name??", "William", "Willy", "Will", "Walt");
+  loadQuestion("What is my name?", "Marielle", "Mariellen", "Marie", "Mary");
+  loadQuestion("What is his name?", "William", "Willy", "Will", "Walt");
+  loadQuestion("What is they're name?", "Molly", "Monica", "Milly", "Mook");
+  // initialize timer based on number of questions with 10 seconds per question
+  quizTimer = 5+(10 * questions.length);
   // initialize header
   var headerEl = document.createElement("header");
   var viewHighScoresEl = document.createElement("h1");
@@ -247,8 +256,9 @@ var initializePage = function () {
   viewHighScoresEl.textContent = "View High Scores";
   timerEl = document.createElement("h1");
   timerEl.textContent = "Time: " + quizTimer;
-  viewHighScoresEl.addEventListener("click", completeHighScorePage);
   timerEl.id = "timer";
+  viewHighScoresEl.addEventListener("click", completeHighScorePage);
+
   headerEl.append(viewHighScoresEl);
   headerEl.append(timerEl);
   // add header to page
