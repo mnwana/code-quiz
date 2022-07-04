@@ -96,13 +96,15 @@ var addNewScore = function (event) {
   // get new nickname
   var nickname = document.querySelector("#hs-input").value;
   // load local storage & add new score
-  highScores = JSON.parse(localStorage.getItem("high-scores"));
-  if (!highScores) {
+  savedScores = localStorage.getItem("high-scores");
+  if (!savedScores) {
     highScores = [];
+  } else {
+    highScores = JSON.parse(savedScores);
   }
   highScores.push({ nickname: nickname, score: quizTimer });
   // resort high scores & save back to local storage
-//   highScores = highScores.sort((a, b) => a.score.localeCompare(b.score));
+  //   highScores = highScores.sort((a, b) => a.score.localeCompare(b.score));
   // save to local storage
   localStorage.setItem("high-scores", JSON.stringify(highScores));
   completeHighScorePage();
@@ -110,6 +112,56 @@ var addNewScore = function (event) {
 
 var completeHighScorePage = function () {
   questionTextEl.textContent = "High Scores";
+  //   remove score form
+  var formEl = document.querySelector("#score-form");
+  var highScoreBox = document.querySelector("#high-score-box");
+  if (formEl) {
+    formEl.remove();
+  }
+  if (highScoreBox) {
+    highScoreBox.remove();
+  }
+  //   Display high scores
+  var highScoreBox = document.createElement("div");
+  highScoreBox.id = "high-score-box";
+  var highScoreList = document.createElement("ul");
+  highScoreList.id = "high-scores";
+  console.log(highScores);
+  //   iterate over values in highScores to add top 3 to list
+  for (var i = 0; i < highScores.length && i < 3; i++) {
+    currentScore = highScores[i];
+    var scoreEl = document.createElement("li");
+    scoreEl.className = "score-list-item";
+    scoreEl.textContent =
+      i + 1 + ". " + currentScore.nickname + ": " + currentScore.score;
+    highScoreList.append(scoreEl);
+  }
+  //   add buttons for clear high score and go back to home page
+  var clearScoresEl = document.createElement("button");
+  var goBackEl = document.createElement("button");
+
+  clearScoresEl.className = "btn";
+  clearScoresEl.id = "clear-scores";
+  clearScoresEl.textContent = "Clear Scores";
+  goBackEl.className = "btn";
+  goBackEl.id = "restart";
+  goBackEl.textContent = "Go Back";
+  highScoreBox.append(highScoreList);
+  highScoreBox.append(goBackEl);
+  highScoreBox.append(clearScoresEl);
+  mainEl.append(highScoreBox);
+  clearScoresEl.addEventListener("click", clearScoresHandler);
+};
+
+var clearScoresHandler = function (event) {
+  var clearScoresConfirm = confirm(
+    "Are you sure you'd like to clear all high scores?"
+  );
+  if (clearScoresConfirm) {
+    highScores = [];
+    localStorage.setItem("high-scores", highScores);
+    completeHighScorePage();
+  }
 };
 
 var startQuizHandler = function (event) {
