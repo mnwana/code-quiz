@@ -8,7 +8,8 @@ var startQuizEl = document.querySelector("#start-quiz");
 var timerEl = document.querySelector("#timer");
 var questionTextEl = document.querySelector("#question-text");
 var answerListEl = document.querySelector("#answer-list");
-var answerFlagEl = document.querySelector("#answer-flag h2")
+var answerFlagEl = document.querySelector("#answer-flag h2");
+var highScores = [];
 
 // load question text
 // TODO: will look to change this to read from file or something
@@ -28,28 +29,43 @@ var loadQuestion = function (
 
 var answersHandler = function (event) {
   var isCorrect = event.target.getAttribute("data-is-correct");
-   // if isCorrect, display "Correct!"
-  if(isCorrect=="1"){
+  // if isCorrect, display "Correct!"
+  if (isCorrect == "1") {
     answerFlagEl.textContent = "Correct!";
   }
-    // if !isCorrect, deduct 10 seconds from timer & display "Wrong!"
-
-  else if(isCorrect=="0"){
+  // if !isCorrect, deduct 10 seconds from timer & display "Wrong!"
+  else if (isCorrect == "0") {
     answerFlagEl.textContent = "Wrong!";
-    quizTimer-=10;
+    quizTimer -= 10;
   }
   // if more questions remain & time >0
-  if(quizTimer>0&&questions[questionNum]){
-    // clear existing list 
-    answerListEl.replaceChildren();;
+  if (quizTimer > 0 && questions[questionNum]) {
+    // clear existing list
+    answerListEl.replaceChildren();
     // call next question
     displayQuiz();
-  }
-  else{
+  } else {
     clearInterval(quizInterval);
+    displayHighScores();
   }
 
   // else get high score input
+};
+
+var displayHighScores = function () {
+  // get initials for new score value & update local storage array
+  addNewScore();
+  // for each value in array add row item
+  // create button to go back to quiz start page
+  // create button to clear high scores
+};
+
+var addNewScore = function () {
+  // load local storage
+  // get new nickname
+  // add to high score array resort values
+  // use 2 arrays to insert & sort where new value > next value
+  // save to local storage
 };
 
 var startQuizHandler = function (event) {
@@ -92,6 +108,7 @@ var updateTimer = function () {
   timerEl.textContent = "Time: " + quizTimer;
   quizTimer--;
 };
+
 // initialize timer
 timerEl.textContent = "Time: " + quizTimer;
 startQuizEl.addEventListener("click", startQuizHandler);
