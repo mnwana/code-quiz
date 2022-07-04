@@ -13,6 +13,8 @@ var answerFlagEl = document.querySelector("#answer-flag h2");
 var highScores;
 var instructionsEL = document.querySelector("#instructions");
 var saveScoreEl;
+var viewHighScoresEl =document.querySelector("#view-high-scores");
+var bodyEl = document.querySelector("body");
 
 // load question text
 // TODO: will look to change this to read from file or something
@@ -115,11 +117,15 @@ var completeHighScorePage = function () {
   //   remove score form
   var formEl = document.querySelector("#score-form");
   var highScoreBox = document.querySelector("#high-score-box");
+  var headerEl = document.querySelector("header");
   if (formEl) {
     formEl.remove();
   }
   if (highScoreBox) {
     highScoreBox.remove();
+  }
+  if (headerEl) {
+    headerEl.remove();
   }
   //   Display high scores
   var highScoreBox = document.createElement("div");
@@ -151,6 +157,7 @@ var completeHighScorePage = function () {
   highScoreBox.append(clearScoresEl);
   mainEl.append(highScoreBox);
   clearScoresEl.addEventListener("click", clearScoresHandler);
+  goBackEl.addEventListener("click", goBackHandler);
 };
 
 var clearScoresHandler = function (event) {
@@ -214,6 +221,23 @@ var updateTimer = function () {
   quizTimer--;
 };
 
-timerEl.textContent = "Time: " + quizTimer;
+var initializePage = function(){
+    // initialize header
+    var headerEl = document.createElement("header");
+    var viewHighScoresEl = document.createElement("h1");
+    viewHighScoresEl.id="view-high-scores";
+    viewHighScoresEl.textContent="View High Scores";
+    var timerEl = document.createElement("h1");
+    timerEl.textContent = "Time: " + quizTimer;
+    viewHighScoresEl.addEventListener("click",completeHighScorePage);
+    timerEl.id="timer";
+    headerEl.append(viewHighScoresEl);
+    headerEl.append(timerEl);
+    // add header to page
+    bodyEl.append(headerEl);
+};
+
 startQuizEl.addEventListener("click", startQuizHandler);
 answers.addEventListener("click", answersHandler);
+
+initializePage();
