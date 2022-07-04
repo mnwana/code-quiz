@@ -3,17 +3,17 @@ var questions = [];
 var questionNum = 0;
 var quizTimer = 30;
 var quizInterval;
-var mainEl = document.querySelector("main");
-var answersEl = document.querySelector("#answers");
+var mainEl = document.createElement("main");
+var answersEl = document.createElement("div");
 var startQuizEl = document.querySelector("#start-quiz");
 var timerEl = document.querySelector("#timer");
-var questionTextEl = document.querySelector("#question-text");
-var answerListEl = document.querySelector("#answer-list");
-var answerFlagEl = document.querySelector("#answer-flag h2");
+// var questionTextEl = document.querySelector("#instructions");
+var answerListEl = document.createElement("ul");
+var answerFlagEl = document.createElement("div");
 var highScores;
 var instructionsEL = document.querySelector("#instructions");
 var saveScoreEl;
-var viewHighScoresEl =document.querySelector("#view-high-scores");
+var viewHighScoresEl = document.querySelector("#view-high-scores");
 var bodyEl = document.querySelector("body");
 
 // load question text
@@ -62,11 +62,15 @@ var answersHandler = function (event) {
 };
 
 var displayHighScoresPage = function () {
+  var questionTextEl = document.querySelector("#question-text");
   questionTextEl.textContent = "Game Over!";
   answerListEl.replaceChildren();
   quizTimer = Math.max(quizTimer, 0);
   answerFlagEl.textContent = "";
-  instructionsEL.textContent = "Your final score is: " + quizTimer;
+  var subHeaderEl = document.createElement("p")
+  subHeaderEl.textContent = "Your final score is: " + quizTimer;
+  var introContentEl = document.querySelector("#intro-content");
+  introContentEl.append(subHeaderEl);
   //   create input box
   var hsFormEl = document.createElement("form");
   var inputEl = document.createElement("input");
@@ -86,6 +90,7 @@ var displayHighScoresPage = function () {
   hsFormEl.append(inputEl);
   hsFormEl.append(submitEl);
   mainEl.append(hsFormEl);
+  bodyEl.append(mainEl);
   saveScoreEl = document.querySelector("#save-score");
   saveScoreEl.addEventListener("click", addNewScore);
   // for each value in array add row item
@@ -113,6 +118,7 @@ var addNewScore = function (event) {
 };
 
 var completeHighScorePage = function () {
+  var questionTextEl = document.querySelector("#question-text");
   questionTextEl.textContent = "High Scores";
   //   remove score form
   var formEl = document.querySelector("#score-form");
@@ -171,6 +177,11 @@ var clearScoresHandler = function (event) {
   }
 };
 
+var  goBackHandler = function(){
+  mainEl.replaceChildren();
+  initializePage();
+}
+
 var startQuizHandler = function (event) {
   // initialize timer
   quizTimer = 30;
@@ -183,18 +194,27 @@ var startQuizHandler = function (event) {
   sortQuestions();
   // start timer countdown
   quizInterval = setInterval(updateTimer, 1000);
-  // remove start quiz element
-  startQuizEl.remove();
   // remove instructions text
-  instructionsEL.textContent = "";
-  //   instructionsEL.remove();
-  // call displayQuestion to load first question
+  document.querySelector("#instructions").remove();
+  // remove start quiz element
+  document.querySelector("#start-quiz").remove();
+  // add answers containers to main 
+  answersEl.id = "answers";
+  answerListEl.id = "answer-list";
+  answersEl.append(answerListEl);
+  mainEl.append(answersEl);
+  // add correctness container to main
+  answerFlagEl.id = "answer-flag";
+  var answerFlagTextEl = document.createElement("h2");
+  answerFlagEl.append(answerFlagTextEl);
+  mainEl.append(answerFlagEl);
   displayQuestion();
 };
 
 var displayQuestion = function () {
   var currentQuestion = questions[questionNum];
   // display question
+  var questionTextEl = document.querySelector("#question-text");
   questionTextEl.textContent = currentQuestion.questionText;
   // set answer options
   for (var i = 0; i < currentQuestion.answers.length; i++) {
@@ -211,6 +231,7 @@ var displayQuestion = function () {
     answerEl.append(btnEl);
     answerListEl.append(answerEl);
   }
+  answers.addEventListener("click", answersHandler);
   questionNum++;
 };
 // sort questions in random order
@@ -221,23 +242,40 @@ var updateTimer = function () {
   quizTimer--;
 };
 
-var initializePage = function(){
-    // initialize header
-    var headerEl = document.createElement("header");
-    var viewHighScoresEl = document.createElement("h1");
-    viewHighScoresEl.id="view-high-scores";
-    viewHighScoresEl.textContent="View High Scores";
-    var timerEl = document.createElement("h1");
-    timerEl.textContent = "Time: " + quizTimer;
-    viewHighScoresEl.addEventListener("click",completeHighScorePage);
-    timerEl.id="timer";
-    headerEl.append(viewHighScoresEl);
-    headerEl.append(timerEl);
-    // add header to page
-    bodyEl.append(headerEl);
+var initializePage = function () {
+  // initialize header
+  var headerEl = document.createElement("header");
+  var viewHighScoresEl = document.createElement("h1");
+  viewHighScoresEl.id = "view-high-scores";
+  viewHighScoresEl.textContent = "View High Scores";
+  timerEl = document.createElement("h1");
+  timerEl.textContent = "Time: " + quizTimer;
+  viewHighScoresEl.addEventListener("click", completeHighScorePage);
+  timerEl.id = "timer";
+  headerEl.append(viewHighScoresEl);
+  headerEl.append(timerEl);
+  // add header to page
+  bodyEl.append(headerEl);
+  // initialize instructions
+  var introEl = document.createElement("div");
+  introEl.id = "intro-content";
+  var introTitle = document.createElement("h1");
+  introTitle.id = "question-text";
+  introTitle.textContent = "Coding Quiz";
+  var introInstructions = document.createElement("p");
+  introInstructions.id = "instructions";
+  introInstructions.textContent =
+    "Try to answer as many questions in the time provided. You will see if your output is correct after making a choice. Any incorrect answer will result in a deduction of 10 seconds from the timer and your final score. ";
+  var startQuizEl = document.createElement("button");
+  startQuizEl.id = "start-quiz";
+  startQuizEl.textContent = "Start Quiz";
+  startQuizEl.addEventListener("click", startQuizHandler);
+  introEl.append(introTitle);
+  introEl.append(introInstructions);
+  introEl.append(startQuizEl);
+  mainEl.append(introEl);
+  bodyEl.append(mainEl);
 };
 
-startQuizEl.addEventListener("click", startQuizHandler);
-answers.addEventListener("click", answersHandler);
 
 initializePage();
