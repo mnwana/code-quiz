@@ -1,20 +1,15 @@
-// initialize starting values for question array, quiz timer and main/header
+// initialize starting values for question array, quiz timer and main
+var bodyEl = document.querySelector("body");
+var mainEl = document.createElement("main");
+var timerEl;
+var answerListEl;
+var answerFlagEl;
+var quizInterval;
+var highScores;
 var questions = [];
 var questionNum = 0;
 var quizTimer = 30;
-var quizInterval;
-var mainEl = document.createElement("main");
-var answersEl = document.createElement("div");
-var startQuizEl = document.querySelector("#start-quiz");
-var timerEl = document.querySelector("#timer");
-// var questionTextEl = document.querySelector("#instructions");
-var answerListEl = document.createElement("ul");
-var answerFlagEl = document.createElement("div");
-var highScores;
-var instructionsEL = document.querySelector("#instructions");
-var saveScoreEl;
-var viewHighScoresEl = document.querySelector("#view-high-scores");
-var bodyEl = document.querySelector("body");
+
 
 // load question text
 // TODO: will look to change this to read from file or something
@@ -67,7 +62,7 @@ var displayHighScoresPage = function () {
   answerListEl.replaceChildren();
   quizTimer = Math.max(quizTimer, 0);
   answerFlagEl.textContent = "";
-  var subHeaderEl = document.createElement("p")
+  var subHeaderEl = document.createElement("p");
   subHeaderEl.textContent = "Your final score is: " + quizTimer;
   var introContentEl = document.querySelector("#intro-content");
   introContentEl.append(subHeaderEl);
@@ -91,8 +86,7 @@ var displayHighScoresPage = function () {
   hsFormEl.append(submitEl);
   mainEl.append(hsFormEl);
   bodyEl.append(mainEl);
-  saveScoreEl = document.querySelector("#save-score");
-  saveScoreEl.addEventListener("click", addNewScore);
+  submitEl.addEventListener("click", addNewScore);
   // for each value in array add row item
   // create button to go back to quiz start page
   // create button to clear high scores
@@ -177,10 +171,10 @@ var clearScoresHandler = function (event) {
   }
 };
 
-var  goBackHandler = function(){
+var goBackHandler = function () {
   mainEl.replaceChildren();
   initializePage();
-}
+};
 
 var startQuizHandler = function (event) {
   // initialize timer
@@ -198,12 +192,15 @@ var startQuizHandler = function (event) {
   document.querySelector("#instructions").remove();
   // remove start quiz element
   document.querySelector("#start-quiz").remove();
-  // add answers containers to main 
+  // add answers containers to main
+  var answersEl = document.createElement("div");
+  answerListEl = document.createElement("ul");
   answersEl.id = "answers";
   answerListEl.id = "answer-list";
   answersEl.append(answerListEl);
   mainEl.append(answersEl);
   // add correctness container to main
+  answerFlagEl = document.createElement("div");
   answerFlagEl.id = "answer-flag";
   var answerFlagTextEl = document.createElement("h2");
   answerFlagEl.append(answerFlagTextEl);
@@ -276,6 +273,5 @@ var initializePage = function () {
   mainEl.append(introEl);
   bodyEl.append(mainEl);
 };
-
 
 initializePage();
