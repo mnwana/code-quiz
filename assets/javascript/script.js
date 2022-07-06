@@ -86,17 +86,17 @@ var displayHighScoresPage = function () {
   hsFormEl.append(submitEl);
   mainEl.append(hsFormEl);
   bodyEl.append(mainEl);
-  submitEl.addEventListener("click", addNewScore);
+  submitEl.addEventListener("click", readNickname);
   // for each value in array add row item
   // create button to go back to quiz start page
   // create button to clear high scores
 };
 
-var addNewScore = function (event) {
+var readNickname = function (event) {
   event.preventDefault();
   // get new nickname
   var nickname = document.querySelector("#hs-input").value;
-  if (nickname.length<1) {
+  if (nickname.length < 1) {
     window.alert("You must enter a nickname:");
     return false;
   } else {
@@ -111,7 +111,6 @@ var completeHighScorePage = function (nickname) {
   } else {
     highScores = JSON.parse(savedScores);
   }
-  console.log(nickname);
   if (typeof nickname === "string" || nickname instanceof String) {
     highScores.push({ nickname: nickname, score: quizTimer });
   }
@@ -143,6 +142,12 @@ var completeHighScorePage = function (nickname) {
   }
   if (headerEl) {
     headerEl.remove();
+  }
+  if (answerListEl) {
+    answerListEl.remove();
+  }
+  if (answerFlagEl) {
+    answerFlagEl.remove();
   }
   //   Display high scores
   var highScoreBox = document.createElement("div");
