@@ -9,6 +9,7 @@ var highScores;
 var questions;
 var questionNum;
 var quizTimer;
+var timeOut;
 
 // load question text
 // TODO: will look to change this to read from file or something
@@ -48,8 +49,7 @@ var answersHandler = function (event) {
     // call next question
     displayQuestion();
   } else {
-    clearInterval(quizInterval);
-    displayHighScoresPage();
+    endQuiz();
   }
 
   // else get high score input
@@ -197,6 +197,12 @@ var goBackHandler = function () {
   initializePage();
 };
 
+var endQuiz = function(){
+  console.log("endedquiz");
+  clearInterval(quizInterval);
+  displayHighScoresPage();
+}
+
 var startQuizHandler = function (event) {
   // start timer countdown
   quizInterval = setInterval(updateTimer, 1000);
@@ -246,6 +252,9 @@ var displayQuestion = function () {
 var updateTimer = function () {
   timerEl.textContent = "Time: " + quizTimer;
   quizTimer--;
+  if(quizTimer<=0){
+    endQuiz();
+  }
 };
 
 var initializePage = function () {
@@ -260,6 +269,7 @@ var initializePage = function () {
   loadQuestion("What is they're name?", "Molly", "Monica", "Milly", "Mook");
   // initialize timer based on number of questions with 10 seconds per question
   quizTimer = 5 + 10 * questions.length;
+  console.log("Time alotted via quizTimer:" + quizTimer);
   // initialize header
   var headerEl = document.createElement("header");
   var viewHighScoresEl = document.createElement("h1");
