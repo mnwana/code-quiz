@@ -13,16 +13,10 @@ var timeOut;
 
 // load question text
 // TODO: will look to change this to read from file or something
-var loadQuestion = function (
-  questionText,
-  correctChoice,
-  choice2,
-  choice3,
-  choice4
-) {
+var loadQuestion = function (questionArr) {
   var question = {
-    questionText: questionText,
-    answers: [correctChoice, choice2, choice3, choice4],
+    questionText: questionArr[0],
+    answers: shuffleArray(questionArr[1]),
   };
   questions.push(question);
 };
@@ -197,11 +191,10 @@ var goBackHandler = function () {
   initializePage();
 };
 
-var endQuiz = function(){
-  console.log("endedquiz");
+var endQuiz = function () {
   clearInterval(quizInterval);
   displayHighScoresPage();
-}
+};
 
 var startQuizHandler = function (event) {
   // start timer countdown
@@ -227,22 +220,20 @@ var startQuizHandler = function (event) {
 };
 
 var displayQuestion = function () {
+  // load question attributes
   var currentQuestion = questions[questionNum];
   // display question
   var questionTextEl = document.querySelector("#question-text");
   questionTextEl.textContent = currentQuestion.questionText;
   // set answer options
   for (var i = 0; i < currentQuestion.answers.length; i++) {
-    currentAnswer = currentQuestion.answers[i];
+    currentAnswer = currentQuestion.answers[i][1];
     var answerEl = document.createElement("li");
     var btnEl = document.createElement("button");
     btnEl.className = "answer-option";
     btnEl.textContent = i + 1 + ". " + currentAnswer;
-    btnEl.setAttribute("data-is-correct", "0");
+    btnEl.setAttribute("data-is-correct", currentQuestion.answers[i][0]);
     // if first value (and correct answer) set isCorrect=true
-    if (i == 0) {
-      btnEl.setAttribute("data-is-correct", "1");
-    }
     answerEl.append(btnEl);
     answerListEl.append(answerEl);
   }
@@ -252,7 +243,7 @@ var displayQuestion = function () {
 var updateTimer = function () {
   timerEl.textContent = "Time: " + quizTimer;
   quizTimer--;
-  if(quizTimer<=0){
+  if (quizTimer <= 0) {
     endQuiz();
   }
 };
@@ -262,14 +253,56 @@ var initializePage = function () {
   questions = [];
   questionNum = 0;
   // load 5 questions into quiz
-  loadQuestion("What is my name??", "Marielle", "Mariellen", "Marie", "Mary");
-  loadQuestion("What is his name??", "William", "Willy", "Will", "Walt");
-  loadQuestion("What is my name?", "Marielle", "Mariellen", "Marie", "Mary");
-  loadQuestion("What is his name?", "William", "Willy", "Will", "Walt");
-  loadQuestion("What is they're name?", "Molly", "Monica", "Milly", "Mook");
+  loadQuestion([
+    "What is my name? 2",
+    [
+      [1, "Marielle"],
+      [0, "Mariellen"],
+      [0, "Marie"],
+      [0, "Mary"],
+    ],
+  ]);
+  loadQuestion([
+    "What is his name? 2",
+    [
+      [1, "William"],
+      [0, "Willy"],
+      [0, "Will"],
+      [0, "Walt"],
+    ],
+  ]);
+  loadQuestion([
+    "What is my name? 1",
+    [
+      [1, "Marielle"],
+      [0, "Mariellen"],
+      [0, "Marie"],
+      [0, "Mary"],
+    ],
+  ]);
+  loadQuestion([
+    "What is his name? 1",
+    [
+      [1, "William"],
+      [0, "Willy"],
+      [0, "Will"],
+      [0, "Walt"],
+    ],
+  ]);
+  loadQuestion([
+    "What is they're name? 1",
+    [
+      [1, "Molly"],
+      [0, "Monica"],
+      [0, "Milly"],
+      [0, "Mook"],
+    ],
+  ]);
+
+  // shuffle question order
+  questions = shuffleArray(questions);
   // initialize timer based on number of questions with 10 seconds per question
   quizTimer = 5 + 10 * questions.length;
-  console.log("Time alotted via quizTimer:" + quizTimer);
   // initialize header
   var headerEl = document.createElement("header");
   var viewHighScoresEl = document.createElement("h1");
@@ -303,6 +336,13 @@ var initializePage = function () {
   introEl.append(startQuizEl);
   mainEl.append(introEl);
   bodyEl.append(mainEl);
+};
+
+var shuffleArray = function (unshuffledArr) {
+  return unshuffledArr
+    .map((value) => ({ value, sort: Math.random() }))
+    .sort((a, b) => a.sort - b.sort)
+    .map(({ value }) => value);
 };
 
 initializePage();
