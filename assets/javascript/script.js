@@ -63,7 +63,7 @@ var displayHighScoresPage = function () {
   answerFlagEl.textContent = "";
   var subHeaderEl = document.createElement("p");
   subHeaderEl.textContent = "Your final score is: " + quizTimer;
-  subHeaderEl.id="sub-header";
+  subHeaderEl.id = "sub-header";
   var introContentEl = document.querySelector("#intro-content");
   introContentEl.append(subHeaderEl);
   //   create input box
@@ -96,7 +96,12 @@ var addNewScore = function (event) {
   event.preventDefault();
   // get new nickname
   var nickname = document.querySelector("#hs-input").value;
-  completeHighScorePage(nickname);
+  if (nickname.length<1) {
+    window.alert("You must enter a nickname:");
+    return false;
+  } else {
+    completeHighScorePage(nickname);
+  }
 };
 
 var completeHighScorePage = function (nickname) {
@@ -106,7 +111,8 @@ var completeHighScorePage = function (nickname) {
   } else {
     highScores = JSON.parse(savedScores);
   }
-  if (nickname) {
+  console.log(nickname);
+  if (typeof nickname === "string" || nickname instanceof String) {
     highScores.push({ nickname: nickname, score: quizTimer });
   }
   // remove instructions element
@@ -117,7 +123,7 @@ var completeHighScorePage = function (nickname) {
   if (document.querySelector("#start-quiz")) {
     document.querySelector("#start-quiz").remove();
   }
-// remove subheader
+  // remove subheader
   if (document.querySelector("#sub-header")) {
     document.querySelector("#sub-header").remove();
   }
@@ -248,7 +254,7 @@ var initializePage = function () {
   loadQuestion("What is his name?", "William", "Willy", "Will", "Walt");
   loadQuestion("What is they're name?", "Molly", "Monica", "Milly", "Mook");
   // initialize timer based on number of questions with 10 seconds per question
-  quizTimer = 5+(10 * questions.length);
+  quizTimer = 5 + 10 * questions.length;
   // initialize header
   var headerEl = document.createElement("header");
   var viewHighScoresEl = document.createElement("h1");
