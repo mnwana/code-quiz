@@ -252,57 +252,13 @@ var initializePage = function () {
   // reset questions array and question num
   questions = [];
   questionNum = 0;
-  // load 5 questions into quiz
-  loadQuestion([
-    "What is my name? 2",
-    [
-      [1, "Marielle"],
-      [0, "Mariellen"],
-      [0, "Marie"],
-      [0, "Mary"],
-    ],
-  ]);
-  loadQuestion([
-    "What is his name? 2",
-    [
-      [1, "William"],
-      [0, "Willy"],
-      [0, "Will"],
-      [0, "Walt"],
-    ],
-  ]);
-  loadQuestion([
-    "What is my name? 1",
-    [
-      [1, "Marielle"],
-      [0, "Mariellen"],
-      [0, "Marie"],
-      [0, "Mary"],
-    ],
-  ]);
-  loadQuestion([
-    "What is his name? 1",
-    [
-      [1, "William"],
-      [0, "Willy"],
-      [0, "Will"],
-      [0, "Walt"],
-    ],
-  ]);
-  loadQuestion([
-    "What is they're name? 1",
-    [
-      [1, "Molly"],
-      [0, "Monica"],
-      [0, "Milly"],
-      [0, "Mook"],
-    ],
-  ]);
+  
+  generateQuestionsArray();
 
   // shuffle question order
   questions = shuffleArray(questions);
   // initialize timer based on number of questions with 10 seconds per question
-  quizTimer = 5 + 10 * questions.length;
+  quizTimer = 10 * questions.length;
   // initialize header
   var headerEl = document.createElement("header");
   var viewHighScoresEl = document.createElement("h1");
@@ -337,6 +293,104 @@ var initializePage = function () {
   mainEl.append(introEl);
   bodyEl.append(mainEl);
 };
+
+var generateQuestionsArray = function(){
+  // load questions into quiz from https://www.w3schools.com/js/js_quiz.asp
+  loadQuestion([
+    "Inside which HTML element do we put the JavaScript?",
+    [
+      [0, "<js>"],
+      [0, "<scripting"],
+      [0, "<javascript>"],
+      [1, "<script>"],
+    ],
+  ]);
+
+  loadQuestion([
+   'What is the correct JavaScript syntax to change the content of the HTML element below?<br><br>"<p id="demo">This is a demonstration.</p>',
+    [
+      [0, '#demo.innerHTML = "Hello World!";'],
+      [0, 'document.getElement("p").innerHTML = "Hello World!";'],
+      [0, 'document.getElementByName("p").innerHTML = "Hello World!";'],
+      [1, 'document.getElementById("demo").innerHTML = "Hello World!";'],
+    ],
+  ]);
+
+  loadQuestion([
+    'Where is the correct place to insert a JavaScript?',
+    [
+      [0, 'Both the <head> section and the <body> section are correct'],
+      [1, 'The <body> section'],
+      [0, 'The <head section>'],
+    ],
+  ]);
+
+  loadQuestion([
+    'What is the correct syntax for referring to an external script called "xxx.js"?',
+    [
+      [1, '<script src="xxx.js">'],
+      [0, '<script name="xxx.js">'],
+      [0, '<script href="xxx.js">'],
+    ],
+  ]);
+
+  loadQuestion([
+    'The external JavaScript file must contain the <script> tag.',
+    [
+      [0, 'True'],
+      [1, 'False'],
+    ],
+  ]);
+
+  loadQuestion([
+    'How do you write "Hello World" in an alert box?',
+    [
+      [0, 'alertBox("Hello World");'],
+      [0, 'msgBox("Hello World");'],
+      [1, 'alert("Hello World");'],
+      [0, 'msg("Hello World");'],
+    ],
+  ]);
+
+  loadQuestion([
+    'How do you create a function in JavaScript?',
+    [
+      [0, 'function myFunction()'],
+      [0, 'function:myFunction()'],
+      [1, 'function = myFunction()'],
+    ],
+  ]);
+
+  loadQuestion([
+    'How do you call a function named "myFunction"?',
+    [
+      [0, 'call myFunction()'],
+      [1, 'myFunction()'],
+      [0, 'call function myFunction()'],
+    ],
+  ]);
+
+  loadQuestion([
+    'How to write an IF statement in JavaScript?',
+    [
+      [1, 'if(i==5)'],
+      [0, 'if i = 5'],
+      [0, 'if i = 5 then'],
+      [0, 'if i ==5 then'],
+    ],
+  ]);
+
+  loadQuestion([
+    'How to write an IF statement for executing some code if "i" is NOT equal to 5?',
+    [
+      [0, 'if i <> 5'],
+      [0, 'if i =!5 then'],
+      [0, 'if( i <> 5)'],
+      [1, 'if (i! = 5)'],
+    ],
+  ]);
+  
+}
 
 var shuffleArray = function (unshuffledArr) {
   return unshuffledArr
