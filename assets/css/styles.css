@@ -148,3 +148,21 @@ main {
 #high-score-box .btn {
   margin: 5px;
 }
+
+/* media query for phones and smaller */
+@media screen and (max-width: 575px) {
+  *, header h1 {
+    font-size: 14px;
+  }
+  main {
+    width: 90%;
+  }
+
+  #instructions {
+    padding: 0;
+  }
+
+  #main-title, #answer-flag {
+    font-size: 18px;
+  }
+}
