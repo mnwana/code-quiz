@@ -14,15 +14,197 @@ var questions;
 var questionNum;
 var timeLeft;
 
-// load new question object questions array from array
-var loadQuestion = function (questionArr) {
-  // load question from first position in array, load answer choices after shuffling
-  var question = {
-    questionText: questionArr[0],
-    answers: shuffleArray(questionArr[1]),
-  };
-  // push new question object to question array
-  questions.push(question);
+var initializePage = function () {
+  // reset questions array and question num
+  questions = [];
+  questionNum = 0;
+  // load questions in question array
+  generateQuestionsArray();
+  // shuffle question order
+  questions = shuffleArray(questions);
+  // initialize timer based on number of questions with 10 seconds per question
+  timeLeft = 10 * questions.length;
+  // create header element that includes time left counter and link to high score page elements
+  var headerEl = document.createElement("header");
+  var viewHighScoresEl = document.createElement("h1");
+  viewHighScoresEl.id = "view-high-scores";
+  viewHighScoresEl.textContent = "View High Scores";
+  timerEl = document.createElement("h1");
+  timerEl.textContent = "Time: " + timeLeft;
+  timerEl.id = "timer";
+  viewHighScoresEl.addEventListener("click", completeHighScorePage);
+  // append new elements to header
+  headerEl.append(viewHighScoresEl);
+  headerEl.append(timerEl);
+  // add header to page
+  bodyEl.append(headerEl);
+  // initialize instructions and start quiz elements
+  var introEl = document.createElement("div");
+  introEl.id = "intro-content";
+  mainTitleEl.textContent = "Coding Quiz";
+  var introInstructionsEl = document.createElement("p");
+  introInstructionsEl.id = "instructions";
+  introInstructionsEl.textContent =
+    "Try to answer as many questions in the time provided. You will see if your output is correct after making a choice. Any incorrect answer will result in a deduction of 10 seconds from the timer and your final score. ";
+  var startQuizEl = document.createElement("button");
+  startQuizEl.id = "start-quiz";
+  startQuizEl.textContent = "Start Quiz";
+  startQuizEl.addEventListener("click", startQuizHandler);
+  // append instructions, start quiz and title to main
+  introEl.append(mainTitleEl);
+  introEl.append(introInstructionsEl);
+  introEl.append(startQuizEl);
+  // append intro elements to main
+  mainEl.append(introEl);
+  // append main to body
+  bodyEl.append(mainEl);
+};
+
+// start quiz uppon start quiz button click
+var startQuizHandler = function () {
+  // start quiz timer
+  quizInterval = setInterval(updateTimeLeft, 1000);
+  // remove instructions text & start quiz button
+  document.querySelector("#instructions").remove();
+  document.querySelector("#start-quiz").remove();
+  // create ul within div to hold answers to the question
+  var answersEl = document.createElement("div");
+  answerListEl = document.createElement("ul");
+  answersEl.id = "answers";
+  answerListEl.id = "answer-list";
+  // append ul to div, and div to main
+  answersEl.append(answerListEl);
+  mainEl.append(answersEl);
+  // create correctness div containing h2 and add to main
+  answerFlagEl = document.createElement("div");
+  answerFlagEl.id = "answer-flag";
+  var answerFlagTextEl = document.createElement("h2");
+  answerFlagEl.append(answerFlagTextEl);
+  mainEl.append(answerFlagEl);
+  // add event listener to the answers box
+  answersEl.addEventListener("click", answersHandler);
+  // call display question to show first question
+  displayQuestion();
+};
+
+// load 10 questions into questions array with question at pos 0 and array of answers and which is correct. can take any number of answers
+// -- content from https://www.w3schools.com/js/js_quiz.asp
+var generateQuestionsArray = function () {
+  // [[question text],[[corecctFlag,question1],[correctFlag,question2]...[correctFlag,quetion-n]]]
+  loadQuestion([
+    "Inside which HTML element do we put the JavaScript?",
+    [
+      [0, "<js>"],
+      [0, "<scripting"],
+      [0, "<javascript>"],
+      [1, "<script>"],
+    ],
+  ]);
+
+  loadQuestion([
+    'What is the correct JavaScript syntax to change the content of the HTML element below?<br><br>"<p id="demo">This is a demonstration.</p>',
+    [
+      [0, '#demo.innerHTML = "Hello World!";'],
+      [0, 'document.getElement("p").innerHTML = "Hello World!";'],
+      [0, 'document.getElementByName("p").innerHTML = "Hello World!";'],
+      [1, 'document.getElementById("demo").innerHTML = "Hello World!";'],
+    ],
+  ]);
+
+  loadQuestion([
+    "Where is the correct place to insert a JavaScript?",
+    [
+      [0, "Both the <head> section and the <body> section are correct"],
+      [1, "The <body> section"],
+      [0, "The <head section>"],
+    ],
+  ]);
+
+  loadQuestion([
+    'What is the correct syntax for referring to an external script called "xxx.js"?',
+    [
+      [1, '<script src="xxx.js">'],
+      [0, '<script name="xxx.js">'],
+      [0, '<script href="xxx.js">'],
+    ],
+  ]);
+
+  loadQuestion([
+    "The external JavaScript file must contain the <script> tag.",
+    [
+      [0, "True"],
+      [1, "False"],
+    ],
+  ]);
+
+  loadQuestion([
+    'How do you write "Hello World" in an alert box?',
+    [
+      [0, 'alertBox("Hello World");'],
+      [0, 'msgBox("Hello World");'],
+      [1, 'alert("Hello World");'],
+      [0, 'msg("Hello World");'],
+    ],
+  ]);
+
+  loadQuestion([
+    "How do you create a function in JavaScript?",
+    [
+      [0, "function myFunction()"],
+      [0, "function:myFunction()"],
+      [1, "function = myFunction()"],
+    ],
+  ]);
+
+  loadQuestion([
+    'How do you call a function named "myFunction"?',
+    [
+      [0, "call myFunction()"],
+      [1, "myFunction()"],
+      [0, "call function myFunction()"],
+    ],
+  ]);
+
+  loadQuestion([
+    "How to write an IF statement in JavaScript?",
+    [
+      [1, "if(i==5)"],
+      [0, "if i = 5"],
+      [0, "if i = 5 then"],
+      [0, "if i ==5 then"],
+    ],
+  ]);
+
+  loadQuestion([
+    'How to write an IF statement for executing some code if "i" is NOT equal to 5?',
+    [
+      [0, "if i <> 5"],
+      [0, "if i =!5 then"],
+      [0, "if( i <> 5)"],
+      [1, "if (i! = 5)"],
+    ],
+  ]);
+};
+
+// display question for quiz function
+var displayQuestion = function () {
+  // load question attributes of next question in questions array
+  var currentQuestion = questions[questionNum];
+  // display question
+  mainTitleEl.textContent = currentQuestion.questionText;
+  // for each answer choice, create button within li, set value to answer text, and set data-is-correct to correctFlag value then append to answers ul
+  for (var i = 0; i < currentQuestion.answers.length; i++) {
+    currentAnswer = currentQuestion.answers[i][1];
+    var answerEl = document.createElement("li");
+    var btnEl = document.createElement("button");
+    btnEl.className = "answer-option";
+    btnEl.textContent = i + 1 + ". " + currentAnswer;
+    btnEl.setAttribute("data-is-correct", currentQuestion.answers[i][0]);
+    answerEl.append(btnEl);
+    answerListEl.append(answerEl);
+  }
+  // increment next question position
+  questionNum++;
 };
 
 // event handler for clicking on quiz answers
@@ -51,6 +233,12 @@ var answersHandler = function (event) {
   else {
     endQuiz();
   }
+};
+
+// end quiz by clearing interval and displaying high scores page
+var endQuiz = function () {
+  clearInterval(quizInterval);
+  displayHighScoresPage();
 };
 
 // update page to display high scoress
@@ -199,58 +387,15 @@ var goBackHandler = function () {
   initializePage();
 };
 
-// end quiz by clearing interval and displaying high scores page
-var endQuiz = function () {
-  clearInterval(quizInterval);
-  displayHighScoresPage();
-};
-
-// start quiz uppon start quiz button click
-var startQuizHandler = function () {
-  // start quiz timer
-  quizInterval = setInterval(updateTimeLeft, 1000);
-  // remove instructions text & start quiz button
-  document.querySelector("#instructions").remove();
-  document.querySelector("#start-quiz").remove();
-  // create ul within div to hold answers to the question
-  var answersEl = document.createElement("div");
-  answerListEl = document.createElement("ul");
-  answersEl.id = "answers";
-  answerListEl.id = "answer-list";
-  // append ul to div, and div to main
-  answersEl.append(answerListEl);
-  mainEl.append(answersEl);
-  // create correctness div containing h2 and add to main
-  answerFlagEl = document.createElement("div");
-  answerFlagEl.id = "answer-flag";
-  var answerFlagTextEl = document.createElement("h2");
-  answerFlagEl.append(answerFlagTextEl);
-  mainEl.append(answerFlagEl);
-  // add event listener to the answers box
-  answersEl.addEventListener("click", answersHandler);
-  // call display question to show first question
-  displayQuestion();
-};
-
-// display question for quiz function
-var displayQuestion = function () {
-  // load question attributes of next question in questions array
-  var currentQuestion = questions[questionNum];
-  // display question
-  mainTitleEl.textContent = currentQuestion.questionText;
-  // for each answer choice, create button within li, set value to answer text, and set data-is-correct to correctFlag value then append to answers ul
-  for (var i = 0; i < currentQuestion.answers.length; i++) {
-    currentAnswer = currentQuestion.answers[i][1];
-    var answerEl = document.createElement("li");
-    var btnEl = document.createElement("button");
-    btnEl.className = "answer-option";
-    btnEl.textContent = i + 1 + ". " + currentAnswer;
-    btnEl.setAttribute("data-is-correct", currentQuestion.answers[i][0]);
-    answerEl.append(btnEl);
-    answerListEl.append(answerEl);
-  }
-  // increment next question position
-  questionNum++;
+// load new question object questions array from array
+var loadQuestion = function (questionArr) {
+  // load question from first position in array, load answer choices after shuffling
+  var question = {
+    questionText: questionArr[0],
+    answers: shuffleArray(questionArr[1]),
+  };
+  // push new question object to question array
+  questions.push(question);
 };
 
 // update time left textContent and decrease count
@@ -261,151 +406,6 @@ var updateTimeLeft = function () {
   if (timeLeft <= 0) {
     endQuiz();
   }
-};
-
-var initializePage = function () {
-  // reset questions array and question num
-  questions = [];
-  questionNum = 0;
-  // load questions in question array
-  generateQuestionsArray();
-  // shuffle question order
-  questions = shuffleArray(questions);
-  // initialize timer based on number of questions with 10 seconds per question
-  timeLeft = 10 * questions.length;
-  // create header element that includes time left counter and link to high score page elements
-  var headerEl = document.createElement("header");
-  var viewHighScoresEl = document.createElement("h1");
-  viewHighScoresEl.id = "view-high-scores";
-  viewHighScoresEl.textContent = "View High Scores";
-  timerEl = document.createElement("h1");
-  timerEl.textContent = "Time: " + timeLeft;
-  timerEl.id = "timer";
-  viewHighScoresEl.addEventListener("click", completeHighScorePage);
-  // append new elements to header
-  headerEl.append(viewHighScoresEl);
-  headerEl.append(timerEl);
-  // add header to page
-  bodyEl.append(headerEl);
-  // initialize instructions and start quiz elements
-  var introEl = document.createElement("div");
-  introEl.id = "intro-content";
-  mainTitleEl.textContent = "Coding Quiz";
-  var introInstructionsEl = document.createElement("p");
-  introInstructionsEl.id = "instructions";
-  introInstructionsEl.textContent =
-    "Try to answer as many questions in the time provided. You will see if your output is correct after making a choice. Any incorrect answer will result in a deduction of 10 seconds from the timer and your final score. ";
-  var startQuizEl = document.createElement("button");
-  startQuizEl.id = "start-quiz";
-  startQuizEl.textContent = "Start Quiz";
-  startQuizEl.addEventListener("click", startQuizHandler);
-  // append instructions, start quiz and title to main
-  introEl.append(mainTitleEl);
-  introEl.append(introInstructionsEl);
-  introEl.append(startQuizEl);
-  // append intro elements to main
-  mainEl.append(introEl);
-  // append main to body
-  bodyEl.append(mainEl);
-};
-
-// load 10 questions into questions array with question at pos 0 and array of answers and which is correct. can take any number of answers
-// -- content from https://www.w3schools.com/js/js_quiz.asp
-var generateQuestionsArray = function () {
-  // [[question text],[[corecctFlag,question1],[correctFlag,question2]...[correctFlag,quetion-n]]]
-  loadQuestion([
-    "Inside which HTML element do we put the JavaScript?",
-    [
-      [0, "<js>"],
-      [0, "<scripting"],
-      [0, "<javascript>"],
-      [1, "<script>"],
-    ],
-  ]);
-
-  loadQuestion([
-    'What is the correct JavaScript syntax to change the content of the HTML element below?<br><br>"<p id="demo">This is a demonstration.</p>',
-    [
-      [0, '#demo.innerHTML = "Hello World!";'],
-      [0, 'document.getElement("p").innerHTML = "Hello World!";'],
-      [0, 'document.getElementByName("p").innerHTML = "Hello World!";'],
-      [1, 'document.getElementById("demo").innerHTML = "Hello World!";'],
-    ],
-  ]);
-
-  loadQuestion([
-    "Where is the correct place to insert a JavaScript?",
-    [
-      [0, "Both the <head> section and the <body> section are correct"],
-      [1, "The <body> section"],
-      [0, "The <head section>"],
-    ],
-  ]);
-
-  loadQuestion([
-    'What is the correct syntax for referring to an external script called "xxx.js"?',
-    [
-      [1, '<script src="xxx.js">'],
-      [0, '<script name="xxx.js">'],
-      [0, '<script href="xxx.js">'],
-    ],
-  ]);
-
-  loadQuestion([
-    "The external JavaScript file must contain the <script> tag.",
-    [
-      [0, "True"],
-      [1, "False"],
-    ],
-  ]);
-
-  loadQuestion([
-    'How do you write "Hello World" in an alert box?',
-    [
-      [0, 'alertBox("Hello World");'],
-      [0, 'msgBox("Hello World");'],
-      [1, 'alert("Hello World");'],
-      [0, 'msg("Hello World");'],
-    ],
-  ]);
-
-  loadQuestion([
-    "How do you create a function in JavaScript?",
-    [
-      [0, "function myFunction()"],
-      [0, "function:myFunction()"],
-      [1, "function = myFunction()"],
-    ],
-  ]);
-
-  loadQuestion([
-    'How do you call a function named "myFunction"?',
-    [
-      [0, "call myFunction()"],
-      [1, "myFunction()"],
-      [0, "call function myFunction()"],
-    ],
-  ]);
-
-  loadQuestion([
-    "How to write an IF statement in JavaScript?",
-    [
-      [1, "if(i==5)"],
-      [0, "if i = 5"],
-      [0, "if i = 5 then"],
-      [0, "if i ==5 then"],
-    ],
-  ]);
-
-  loadQuestion([
-    'How to write an IF statement for executing some code if "i" is NOT equal to 5?',
-    [
-      [0, "if i <> 5"],
-      [0, "if i =!5 then"],
-      [0, "if( i <> 5)"],
-      [1, "if (i! = 5)"],
-    ],
-  ]);
 };
 
 // take array as input and return it shuffled randomly
