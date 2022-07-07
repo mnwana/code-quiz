@@ -304,6 +304,8 @@ var completeHighScorePage = function (nickname) {
   // if nickname param is a string, push to high scores array and sve to local storage
   if (typeof nickname === "string" || nickname instanceof String) {
     highScores.push({ nickname: nickname, score: timeLeft });
+    // sort array by score value desc
+    highScores = highScores.sort((a, b) => parseFloat(b.score) - parseFloat(a.score));
   }
   localStorage.setItem("high-scores", JSON.stringify(highScores));
   // remove elements from previous page if they exist - instructions, start quiz button, subheader, score nickname form, header, high-score-box, and quiz question components
